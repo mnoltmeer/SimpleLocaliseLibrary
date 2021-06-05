@@ -23,3 +23,10 @@ int __stdcall LoadLocaleFile(const wchar_t *xml_file) - to load localisation xml
 wchar_t* __stdcall Localise(const wchar_t *mark) - to get localised text.
 
 Localise() geting mark (like $1) and searching for it in record list. If it found, function returns record that assigned to mark. If an error occurs, the function will return NULL. The detailed error text can be obtained by calling the function const wchar_t* __stdcall GetError().
+	
+To further simplify the work with the library, the project contains a module with a static class TLocalisation. This class contains all the necessary methods for working with the localization library. Just include this file in your project and add the localisation library to its directory. After that, you can use the following class methods in your code:
+
+static HINSTANCE LoadLib(const String &dll_path) - loads the library.
+static int FreeLib() - frees library.
+static int OpenLocaleFile(const String &path) - opens a localisation file and creates a set of localised text records.
+static wchar_t *LocaliseText(const String &mark) - returns localised text.
