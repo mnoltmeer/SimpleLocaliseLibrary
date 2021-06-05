@@ -111,8 +111,6 @@ int XMLImport(const wchar_t *xml_file)
 												  text.Length(),
 												  text.c_str()));
 			  }
-
-		   int cnt = vecRecords.size();
 		 }
 	  catch (Exception &e)
 		 {
