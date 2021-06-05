@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+/Localisation.cbproj.local
+/__history
+/__recovery
+/release
+/Win32

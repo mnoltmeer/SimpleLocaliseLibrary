@@ -1,0 +1,16 @@
+1. Create XML with structure like:
+
+<LocalisationFile>
+	<Record id = '0'>first record</Record>
+	<Record id = '1'>second record</Record>
+</LocalisationFile>
+
+2. Mark all text elements which need to localise as $<id>, where <id> is numeric
+
+3. Load Localisation.dll to app and use functions
+
+int __stdcall LoadLocaleFile(const wchar_t *xml_file) - to load localisation xml-file
+
+wchar_t* __stdcall Localise(const wchar_t *mark) - to localise
+
+Localise() geting mark (like $1) and searching for it in record list. If it found, function returns record that assigned to mark.
