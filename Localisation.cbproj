@@ -58,8 +58,7 @@
         <SanitizedProjectName>Localisation</SanitizedProjectName>
         <VerInfo_Locale>1058</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.1;InternalName=;LegalCopyright=2019-2020 Maxim Noltmeer (m.noltmeer@gmail.com);LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Localisation Utility;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <IncludePath>..\..\work-functions\;D:\MyFunc\;$(IncludePath)</IncludePath>
-        <ILINK_LibraryPath>..\..\work-functions\;D:\MyFunc\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <PackageImports>adortl;appanalytics;bcbie;bcbsmp;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CloudService;CustomIPTransport;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXInterBaseDriver;DBXMySQLDriver;DBXSqliteDriver;dsnap;dsnapcon;dsnapxml;FireDAC;FireDACADSDriver;FireDACCommon;FireDACCommonDriver;FireDACCommonODBC;FireDACIBDriver;FireDACMSAccDriver;FireDACMySQLDriver;FireDACPgDriver;FireDACSqliteDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inet;inetdb;inetdbxpress;RESTBackendComponents;RESTComponents;rtl;soapmidas;soaprtl;soapserver;svn;tethering;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclie;vclimg;VCLRESTComponents;VclSmp;vcltouch;vclwinx;vclx;xmlrtl;$(PackageImports)</PackageImports>
@@ -105,6 +104,8 @@
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
         <TASM_Debugging>None</TASM_Debugging>
+        <DynamicRTL>false</DynamicRTL>
+        <UsePackages>false</UsePackages>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DynamicRTL>false</DynamicRTL>
@@ -112,9 +113,9 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.2;InternalName=;LegalCopyright=2019-2020 Maxim Noltmeer (m.noltmeer@gmail.com);LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Localisation Utility;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=Simple Localise Library;FileVersion=1.0.0.3;InternalName=;LegalCopyright=2019-2021 Maxim Noltmeer (m.noltmeer@gmail.com);LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=Localisation Utility;ProductVersion=1.0.0.0;Comments=https://github.com/mnoltmeer/SimpleLocaliseLibrary</VerInfo_Keys>
         <LinkPackageStatics>rtl.lib;vcl.lib;xmlrtl.lib</LinkPackageStatics>
-        <VerInfo_Build>2</VerInfo_Build>
+        <VerInfo_Build>3</VerInfo_Build>
     </PropertyGroup>
     <ItemGroup>
         <None Include="howto.txt"/>
@@ -125,10 +126,11 @@
         <CppCompile Include="main.cpp">
             <BuildOrder>1</BuildOrder>
         </CppCompile>
-        <CppCompile Include="..\..\work-functions\Logs.cpp">
-            <DependentOn>..\..\work-functions\Logs.h</DependentOn>
+        <None Include="UsingLocalisation.cpp">
+            <Exclude>True</Exclude>
+            <DependentOn>UsingLocalisation.h</DependentOn>
             <BuildOrder>3</BuildOrder>
-        </CppCompile>
+        </None>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

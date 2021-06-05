@@ -35,3 +35,9 @@
 /__recovery
 /release
 /Win32
+/DemoApp/LocaliseDemo.res
+/DemoApp/__astcache
+/DemoApp/Win32
+/DemoApp/LocaliseDemo.cbproj.local
+/DemoApp/__recovery
+/DemoApp/__history

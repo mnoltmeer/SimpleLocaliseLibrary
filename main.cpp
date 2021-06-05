@@ -1,5 +1,5 @@
 /*!
-Copyright 2019-2020 Maxim Noltmeer (m.noltmeer@gmail.com)
+Copyright 2019-2021 Maxim Noltmeer (m.noltmeer@gmail.com)
 
 This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ This program is free software: you can redistribute it and/or modify
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 #pragma hdrstop
 #pragma argsused
@@ -29,23 +30,26 @@ This program is free software: you can redistribute it and/or modify
 #include <Xml.xmldom.hpp>
 #include <Xml.XMLIntf.hpp>
 #include <Xml.Win.msxmldom.hpp>
-#include "..\..\work-functions\Logs.h"
+#include "..\work-functions\Logs.h"
 
 struct LocaleRecord
 {
-  int ID;
+  wchar_t *Label;
   wchar_t *Record;
 
-  LocaleRecord(int id, int rec_len, const wchar_t *rec)
+  LocaleRecord(int label_len, const wchar_t *label, int rec_len, const wchar_t *rec)
   {
-	ID = id;
+	Label = new wchar_t[label_len + 1];
+	wcscpy(Label, label);
 	Record = new wchar_t[rec_len + 1];
-    wcscpy(Record, rec);
+	wcscpy(Record, rec);
   }
 };
 //-------------------------------------------------------------------------
 
 std::vector<LocaleRecord> vecRecords;
+wchar_t LastError[256];
+//-------------------------------------------------------------------------
 
 void ClearRecords()
 {
@@ -53,14 +57,17 @@ void ClearRecords()
 	 {
 	   for (int i = 0; i < vecRecords.size(); i++)
 		  {
-	   		delete[] vecRecords[i].Record;
+			delete[] vecRecords[i].Label;
+			delete[] vecRecords[i].Record;
 		  }
 
   	   vecRecords.clear();
 	 }
   catch (Exception &e)
 	 {
-	   SaveLog("exceptions.log", "Localisation::ClearRecords: " + e.ToString());
+	   e.Message = "ClearRecords: " + e.Message;
+
+	   throw e;
 	 }
 }
 //-------------------------------------------------------------------------
@@ -68,61 +75,81 @@ void ClearRecords()
 int XMLImport(const wchar_t *xml_file)
 {
   int res;
-  TXMLDocument *ixml = new TXMLDocument(Application);
+  auto ixml = std::make_unique<TXMLDocument>(Application);
 
   try
 	{
+      if (!FileExists(xml_file))
+    	throw Exception("Localisation file doesn't exist!");
+
+	  ClearRecords();
+
 	  ixml->DOMVendor = GetDOMVendor("MSXML");
 	  ixml->FileName = xml_file;
 	  ixml->Active = true;
 	  ixml->Encoding = "UTF-8";
 	  ixml->Options = ixml->Options << doNodeAutoIndent;
 
-	  _di_IXMLNode LocalizationFile = ixml->DocumentElement;
+	  _di_IXMLNode LocalisationFile = ixml->DocumentElement;
 	  _di_IXMLNode Record;
+
+	  int node_ind;
 
       try
 		 {
-		   ClearRecords();
+		   String text, label;
 
-		   String text;
-
-		   for (int i = 0; i < LocalizationFile->ChildNodes->Count; i++)
+		   for (node_ind = 0; node_ind < LocalisationFile->ChildNodes->Count; node_ind++)
 			  {
-				Record = LocalizationFile->ChildNodes->Nodes[i];
-				vecRecords.push_back(LocaleRecord(int(Record->GetAttribute("id")),
-												  Record->Text.Length(),
-												  Record->Text.c_str()));
+				Record = LocalisationFile->ChildNodes->Nodes[node_ind];
+
+				text = Record->Text;
+				label = Record->GetAttribute("id");
+
+				vecRecords.push_back(LocaleRecord(label.Length(),
+												  label.c_str(),
+												  text.Length(),
+												  text.c_str()));
 			  }
 
 		   int cnt = vecRecords.size();
 		 }
 	  catch (Exception &e)
 		 {
-		   SaveLog("exceptions.log", "Localisation::XMLImport: " + e.ToString());
 		   res = 0;
+
+		   e.Message = "Parsing XML at node [" + IntToStr(node_ind) + "]" + e.Message;
+
+		   throw e;
 		 }
 
 	  res = 1;
 	}
-  __finally {delete ixml;}
+  catch (Exception &e)
+	{
+	  res = 0;
+
+	  e.Message = "XMLImport: " + e.Message;
+
+	  throw e;
+	}
 
   return res;
 }
 //---------------------------------------------------------------------------
 
-wchar_t *FindRecord(int id)
+wchar_t *FindRecord(const wchar_t *label)
 {
   wchar_t *res = NULL;
 
-  if (id < 0)
-    return NULL;
+  if (!label)
+	return NULL;
 
   try
 	 {
 	   for (int i = 0; i < vecRecords.size(); i++)
 		  {
-			if (vecRecords[i].ID == id)
+			if (wcscmp(vecRecords[i].Label, label) == 0)
 			  {
 				res = vecRecords[i].Record;
                 break;
@@ -131,30 +158,39 @@ wchar_t *FindRecord(int id)
 	 }
   catch (Exception &e)
 	 {
-	   SaveLog("exceptions.log", "Localisation::FindRecord: " + e.ToString());
 	   res = NULL;
+
+	   e.Message = "FindRecord: " + e.Message;
+
+	   throw e;
 	 }
 
   return res;
 }
 //-------------------------------------------------------------------------
 
-int MarkToID(const wchar_t *mark)
+const wchar_t *GetLabelFromMark(const wchar_t *mark)
 {
-  int res;
+  const wchar_t *res;
 
   try
 	 {
+	   if (!mark)
+		 throw Exception("Pointer to Mark is NULL!");
+
 	   String str = mark;
 	   str.Delete(1, 1);
 
 	   if (str != "")
-	   	 res = str.ToInt();
+		 res = str.c_str();
 	 }
   catch (Exception &e)
 	 {
-	   SaveLog("exceptions.log", "Localisation::MarkToID: " + e.ToString());
-	   res = -1;
+	   res = nullptr;
+
+	   e.Message = "GetLabelFromMark: " + e.Message;
+
+	   throw e;
 	 }
 
   return res;
@@ -165,19 +201,47 @@ extern "C"
 {
 __declspec(dllexport) int __stdcall LoadLocaleFile(const wchar_t *xml_file)
 {
-  if (FileExists(xml_file))
-	return XMLImport(xml_file);
-  else
-  	return 0;
+  int res;
+
+  try
+	 {
+	   res = XMLImport(xml_file);
+	 }
+  catch (Exception &e)
+	 {
+	   res = 0;
+	   wcscpy(LastError, e.ToString().c_str());
+	 }
+
+  return res;
 }
 //-------------------------------------------------------------------------
 
 __declspec(dllexport) wchar_t* __stdcall Localise(const wchar_t *mark)
 {
-  return FindRecord(MarkToID(mark));
+  wchar_t *res;
+
+  try
+	 {
+	   res = FindRecord(GetLabelFromMark(mark));
+	 }
+  catch (Exception &e)
+	 {
+	   res = NULL;
+	   wcscpy(LastError, e.ToString().c_str());
+	 }
+
+  return res;
+}
+//-------------------------------------------------------------------------
+
+__declspec(dllexport) const wchar_t* __stdcall GetError()
+{
+  return LastError;
 }
 //-------------------------------------------------------------------------
 }
+
 //-------------------------------------------------------------------------
 
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved)
@@ -187,4 +251,5 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void* lpReserved
 
   return 1;
 }
+//-------------------------------------------------------------------------
 
