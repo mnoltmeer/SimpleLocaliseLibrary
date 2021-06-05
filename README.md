@@ -84,7 +84,7 @@ And this is how our application changes in real time:
 
 By default:
 	
-![image](https://user-images.githubusercontent.com/33027745/120896348-c4a46900-c629-11eb-8fa1-b2ee9cf8cc8d.png)
+![image](https://user-images.githubusercontent.com/33027745/120898017-ceca6580-c631-11eb-9244-3ba2e21ba088.png)
 	
 And after choosing one of the localisation files: 
 
