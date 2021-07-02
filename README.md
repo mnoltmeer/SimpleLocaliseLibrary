@@ -16,7 +16,7 @@ How it works:
 </LocalisationFile>
 ```
 
-2. Mark all text elements which need to localise as $<id>, where <id> is string (with no spaces).
+2. Mark all text elements which need to localise as $[id], where [id] is string (with no spaces).
 
 3. Link Localisation.dll to app and use these functions:
 	
@@ -24,7 +24,7 @@ How it works:
 
 ```wchar_t* __stdcall Localise(const wchar_t *mark)``` - to get localised text.
 
-Localise() geting mark (like $1) and searching for it in record list. If it found, function returns record that assigned to mark. If an error occurs, the function will return NULL. The detailed error text can be obtained by calling the function const wchar_t* __stdcall GetError().
+Localise() function geting mark (like $1) and searching for it in record list. If it found, function returns record that assigned to mark. If an error occurs, the function will return NULL. The detailed error text can be obtained by calling the function const wchar_t* __stdcall GetError().
 	
 To further simplify the work with the library, the project contains a module with a static class TLocalisation. This class contains all the necessary methods for working with the localisation library. Just include this file in your project and add the localisation library to its directory. After that, you can use the following class methods in your code:
 	
