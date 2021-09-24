@@ -1,0 +1,8 @@
+﻿<LocalisationFile>
+	<Record id = 'name'>Чарівник</Record>
+	<Record id = 'wiz_say'>Вітаю, мандрівнику. Як тебе звати?</Record>
+	<Record id = 'choice'>Оберіть відповідь</Record>
+	<Record id = 'answer1'>Звуся Ланселотом, лицарем короля Артура</Record>
+	<Record id = 'answer2'>Лицарська обітниця забороняє мені назватися</Record>
+	<Record id = 'answer3'>Не твоя справа, старий дурню</Record>
+</LocalisationFile>

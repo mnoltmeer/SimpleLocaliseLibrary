@@ -1,0 +1,8 @@
+﻿<LocalisationFile>
+	<Record id = 'name'>Wizard</Record>
+	<Record id = 'wiz_say'>Greetings to you, traveler. What's your name?</Record>
+	<Record id = 'choice'>Select answer</Record>
+	<Record id = 'answer1'>I am Lancelot, knight of King Arthur</Record>
+	<Record id = 'answer2'>The knight's vow forbids me to call my name</Record>
+	<Record id = 'answer3'>None of your business, you old fool</Record>
+</LocalisationFile>
