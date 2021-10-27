@@ -94,10 +94,10 @@ int TLocalisation::OpenLocaleFile(const String &path)
 }
 //---------------------------------------------------------------------------
 
-wchar_t *TLocalisation::LocaliseText(const String &mark)
+String TLocalisation::LocaliseText(const String &mark)
 {
   if (DllHandle)
-	return Localise(mark.c_str());
+	return String(Localise(mark.c_str()));
   else
 	return NULL;
 }

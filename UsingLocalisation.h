@@ -37,7 +37,7 @@ class TLocalisation
 	static HINSTANCE LoadLib(const String &dll_path);
 	static int FreeLib();
 	static int OpenLocaleFile(const String &path);
-	static wchar_t *LocaliseText(const String &mark);
+	static String LocaliseText(const String &mark);
     static const wchar_t *GetLastError();
 };
 //---------------------------------------------------------------------------
